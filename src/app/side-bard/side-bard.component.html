@@ -1,0 +1,51 @@
+
+<!-- Botón hamburguesa (siempre visible y fijo arriba a la izquierda, colapsa/expande en desktop y abre/cierra en móvil) -->
+<div class="hamburger-fixed">
+  <span class="hamburger-icon" (click)="isMobile ? toggleSidebar() : toggleCollapse()" aria-label="Abrir/Colapsar menú">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar d-flex flex-column p-3"
+     [class.collapsed]="isCollapsed"
+     [class.open]="isOpen">
+  
+  <!-- Logo -->
+  <div class="logo-container d-flex align-items-center justify-content-center mb-4">
+    <div class="text-center flex-grow-1" *ngIf="!isCollapsed">
+      <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*4oNWQCbibgtaD_0Z5RQtaA.png"
+           alt="Segure Bank" style="height: 100px; width: auto;" />
+      <h5 class="fw-bold text-white mt-2">SecureBank Digital</h5>
+      <small class="text-white-50">Portal de Cliente</small>
+    </div>
+  </div>
+
+  <!-- Menú -->
+  <ul class="nav flex-column mb-auto mt-3">
+    <li class="nav-item" *ngFor="let item of menuItems">
+      <a [routerLink]="item.link"
+         routerLinkActive="active"
+         class="nav-link"
+         [title]="isCollapsed ? item.label : ''">
+        <i [class]="item.icon + ' me-2'"></i>
+        <span *ngIf="!isCollapsed">{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Footer -->
+  <div class="sidebar-footer mt-auto text-center pt-3" *ngIf="!isCollapsed">
+    <hr class="border-secondary" />
+    <div class="user-info text-white">
+      <div class="avatar bg-white text-primary fw-bold mx-auto mb-2">{{ user.initials }}</div>
+      <p class="mb-0">{{ user.name }}</p>
+      <small class="text-white-50">{{ user.role }}</small>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay para móviles -->
+<div class="overlay" *ngIf="isOpen && isMobile" (click)="toggleSidebar()"></div>

@@ -1,0 +1,99 @@
+/* Fondo minimalista profesional para interfaz bancaria */
+.login-bg {
+  background: linear-gradient(120deg, #fafdff 0%, #eaf6ff 100%);
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.decor-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Líneas diagonales finas, azul claro y blanco, con iluminación suave */
+.decor-bg::before,
+.decor-bg::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  pointer-events: none;
+}
+
+.decor-bg::before {
+  background: repeating-linear-gradient(110deg, rgba(0, 123, 255, 0.08) 0 2px, transparent 2px 48px),
+              repeating-linear-gradient(70deg, rgba(0, 123, 255, 0.06) 0 1.5px, transparent 1.5px 36px);
+  opacity: 0.7;
+  filter: blur(0.5px);
+}
+
+.decor-bg::after {
+  background: repeating-linear-gradient(120deg, rgba(255,255,255,0.13) 0 1.5px, transparent 1.5px 32px),
+              repeating-linear-gradient(100deg, rgba(0, 180, 255, 0.07) 0 1.5px, transparent 1.5px 40px);
+  opacity: 0.6;
+  filter: blur(0.5px);
+}
+
+/* Elimina decoraciones previas si existen */
+.layer-lines, .layer-lines--accent { display: none !important; }
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+input.form-control {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Fondo decorativo con líneas */
+.decor-bg {
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Capa de líneas diagonales principales */
+.layer-lines {
+  position: absolute;
+  inset: -10%;
+  transform: rotate(-8deg);
+  background: repeating-linear-gradient(
+    -30deg,
+    rgba(13, 110, 253, 0.06) 0 2px,
+    transparent 2px 16px
+  );
+  opacity: 0.8;
+  filter: blur(1px);
+}
+
+/* Capa de líneas suaves de acento */
+.layer-lines--accent {
+  position: absolute;
+  inset: -15%;
+  transform: rotate(10deg);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 123, 255, 0.07) 0 1.5px,
+    transparent 1.5px 14px
+  );
+  opacity: 0.6;
+  filter: blur(2px);
+  mix-blend-mode: screen;
+}
+
+/* Fondo blanco limpio */
+.login-bg {
+  background-color: #ffffff !important;
+}

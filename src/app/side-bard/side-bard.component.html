@@ -16,34 +16,55 @@
   <!-- Logo -->
   <div class="logo-container d-flex align-items-center justify-content-center mb-4">
     <div class="text-center flex-grow-1" *ngIf="!isCollapsed">
-      <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*4oNWQCbibgtaD_0Z5RQtaA.png"
+  <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*xH0WD7Zqzf6q9lbUvYG6Pg.png"
            alt="Segure Bank" style="height: 100px; width: auto;" />
-      <h5 class="fw-bold text-white mt-2">SecureBank Digital</h5>
-      <small class="text-white-50">Portal de Cliente</small>
+  <small class="text-white-50 d-block text-center mt-2" style="font-size:1.1rem;">Portal de Cliente</small>
     </div>
   </div>
 
   <!-- Menú -->
   <ul class="nav flex-column mb-auto mt-3">
     <li class="nav-item" *ngFor="let item of menuItems">
-      <a [routerLink]="item.link"
-         routerLinkActive="active"
-         class="nav-link"
-         [title]="isCollapsed ? item.label : ''">
-        <i [class]="item.icon + ' me-2'"></i>
-        <span *ngIf="!isCollapsed">{{ item.label }}</span>
+      <a
+        class="nav-link d-flex align-items-center justify-content-between"
+        [routerLink]="item.children ? null : item.link"
+        routerLinkActive="active"
+        [class.has-children]="item.children"
+        (click)="item.children ? toggleAccordion(item.label) : null"
+        [attr.role]="item.children ? 'button' : 'link'"
+        [attr.aria-expanded]="item.children ? (activeAccordion === item.label) : null"
+        [title]="isCollapsed ? item.label : ''"
+      >
+        <div class="d-flex align-items-center">
+          <i [class]="item.icon + ' me-2'"></i>
+          <span *ngIf="!isCollapsed">{{ item.label }}</span>
+        </div>
+        <i *ngIf="item.children && !isCollapsed" class="bi" [ngClass]="activeAccordion === item.label ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
       </a>
+
+      <!-- Submenú -->
+      <ul *ngIf="item.children && activeAccordion === item.label && !isCollapsed" class="submenu list-unstyled ps-4 mb-2">
+        <li *ngFor="let child of item.children">
+          <a [routerLink]="child.link" routerLinkActive="active" class="nav-link sub-link">
+            <i [class]="child.icon + ' me-2'"></i>
+            <span>{{ child.label }}</span>
+          </a>
+        </li>
+      </ul>
     </li>
   </ul>
 
   <!-- Footer -->
   <div class="sidebar-footer mt-auto text-center pt-3" *ngIf="!isCollapsed">
     <hr class="border-secondary" />
-    <div class="user-info text-white">
+    <div class="user-info text-white mb-3">
       <div class="avatar bg-white text-primary fw-bold mx-auto mb-2">{{ user.initials }}</div>
       <p class="mb-0">{{ user.name }}</p>
       <small class="text-white-50">{{ user.role }}</small>
     </div>
+    <button class="btn btn-link text-white logout-btn mt-2" (click)="confirmLogout()" title="Salir de la app">
+      <span class="fw-semibold">Salir</span>
+    </button>
   </div>
 </nav>
 

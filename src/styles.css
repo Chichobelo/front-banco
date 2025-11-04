@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global scrollbar removal (keep scroll behavior but hide bars) */
+html, body {
+	height: 100%;
+}
+
+/* Firefox */
+* {
+	scrollbar-width: none;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+}
+
+/* Prevent accidental horizontal scrollbars */
+html, body {
+	overflow-x: hidden;
+}

@@ -1,0 +1,145 @@
+<div class="dashboard-layout">
+  <app-side-bard></app-side-bard>
+
+  <main class="transfer-main">
+    <div class="container py-3">
+      <div class="page-card p-3 p-md-4">
+        <h2 class="page-title">Transferencias</h2>
+        <p class="page-subtitle text-muted">Envíe dinero de forma segura a cualquier cuenta</p>
+
+  <!-- Paso 1: Formulario -->
+  @if (step === 'form') {
+  <div class="card transfer-card p-3 p-md-4">
+        <div class="card-title mb-3">
+          <h6 class="fw-semibold mb-1">Nueva transferencia</h6>
+          <small class="text-muted">Complete los datos para realizar la transferencia</small>
+        </div>
+
+        <div class="row g-3">
+          <!-- Desde cuenta -->
+          <div class="col-md-6">
+            <label class="form-label">Desde cuenta</label>
+            <select class="form-select" [(ngModel)]="cuentaOrigen">
+              <option value="" disabled [selected]="!cuentaOrigen">Seleccione cuenta de origen</option>
+              <option *ngFor="let c of cuentasOrigen" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <!-- Cuenta destino -->
+          <div class="col-md-6">
+            <label class="form-label">Cuenta destino</label>
+            <input class="form-control" placeholder="Número de cuenta o celular" [(ngModel)]="cuentaDestino" />
+            <small class="form-hint text-muted">Puede ingresar número de cuenta bancaria o número de celular</small>
+          </div>
+
+          <!-- Monto -->
+          <div class="col-md-6">
+            <label class="form-label">Monto a transferir</label>
+            <div class="input-group">
+              <span class="input-group-text prefix">$</span>
+              <input type="number" class="form-control text-end" min="0" step="100" placeholder="0.00" [(ngModel)]="monto" />
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="col-12">
+            <label class="form-label">Descripción (opcional)</label>
+            <input class="form-control" placeholder="Ej: Pago de arriendo" [(ngModel)]="descripcion" />
+          </div>
+        </div>
+
+        <!-- Info seguridad -->
+        <div class="security-hint d-flex align-items-center gap-2 mt-3">
+          <i class="bi bi-shield-check text-primary"></i>
+          <small>Esta transferencia requiere verificación por SMS para garantizar su seguridad</small>
+        </div>
+
+        <div class="mt-3">
+          <button class="btn btn-primary btn-continue w-100" [disabled]="!isFormValid" (click)="goToReview()">
+            Continuar <i class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </div>
+  </div>
+  }
+
+  <!-- Paso 2: Revisión -->
+  @if (step === 'review') {
+  <div class="card review-card p-3 p-md-4">
+        <div class="card-title mb-3">
+          <h6 class="fw-semibold mb-1">Revisar transferencia</h6>
+          <small class="text-muted">Verifique los detalles antes de confirmar</small>
+        </div>
+
+        <div class="review-alert d-flex align-items-start gap-2 mb-3">
+          <i class="bi bi-info-circle text-primary"></i>
+          <small>Revise cuidadosamente los datos. Esta operación no se puede revertir.</small>
+        </div>
+
+        <div class="review-table">
+          <div class="review-row">
+            <div class="label">Desde</div>
+            <div class="value text-end">{{ cuentaOrigen || '—' }}</div>
+          </div>
+          <div class="divider"></div>
+          <div class="review-row">
+            <div class="label">Hacia</div>
+            <div class="value text-end">{{ cuentaDestino || '—' }}</div>
+          </div>
+          <div class="divider"></div>
+          <div class="review-row total">
+            <div class="label">Monto</div>
+            <div class="value text-end">${{ (monto || 0) | number:'1.0-0' }}</div>
+          </div>
+        </div>
+
+        <div class="saldo-box d-flex justify-content-between align-items-center mt-3">
+          <div class="label">Saldo disponible después</div>
+          <div class="value">${{ saldoDespues | number:'1.0-0' }}</div>
+        </div>
+
+        <div class="row g-2 mt-3">
+          <div class="col-md-6">
+            <button class="btn btn-light w-100" (click)="goBackToEdit()">Editar</button>
+          </div>
+          <div class="col-md-6">
+            <button class="btn btn-primary btn-continue w-100" (click)="confirmarTransferencia()">Transferir <i class="bi bi-arrow-right ms-2"></i></button>
+          </div>
+        </div>
+  </div>
+  }
+  
+  <!-- Paso 3: Éxito -->
+  @if (step === 'success') {
+  <div class="success-wrap text-center">
+    <div class="success-badge mx-auto mb-3">
+      <i class="bi bi-check2"></i>
+    </div>
+    <h3 class="fw-bold mb-1">Transferencia exitosa</h3>
+    <p class="text-muted mb-4">Su transferencia ha sido procesada correctamente</p>
+
+    <div class="success-card text-start mx-auto p-3 p-md-4">
+      <div class="row g-2">
+        <div class="col-6 text-muted">Monto transferido</div>
+        <div class="col-6 text-end fw-bold">${{ (monto || 0) | number:'1.0-0' }}</div>
+        <div class="col-12"><hr></div>
+        <div class="col-6 text-muted">Cuenta destino</div>
+        <div class="col-6 text-end">{{ cuentaDestino }}</div>
+        <div class="col-12"><hr></div>
+        <div class="col-6 text-muted">Fecha y hora</div>
+  <div class="col-6 text-end">{{ fechaHoraMostrar | date:'d/M/yyyy, h:mm:ss a' }}</div>
+        <div class="col-12"><hr></div>
+        <div class="col-6 text-muted">Número de referencia</div>
+        <div class="col-6 text-end">{{ referencia }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row gap-2 justify-content-center mt-3">
+      <button class="btn btn-light" (click)="goBackToEdit()">Nueva transferencia</button>
+      <button class="btn btn-primary" (click)="descargarComprobante()">Descargar comprobante</button>
+    </div>
+  </div>
+  }
+      </div>
+    </div>
+  </main>
+</div>

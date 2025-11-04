@@ -8,7 +8,7 @@
   <!-- Tarjeta de login -->
   <div class="card shadow border-0 p-4" style="max-width: 380px; width: 100%; z-index: 10;">
       <div class="text-center mb-3">
-      <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*4oNWQCbibgtaD_0Z5RQtaA.png" alt="Segure Bank" style="height: 140px; width: auto;" />
+  <img src="assets/segure-bank-logo.png" alt="Segure Bank" style="height: 140px; width: auto;" />
     </div>
 
     <h2 class="text-center fw-bold mb-2">¡Hola!</h2>
@@ -22,8 +22,9 @@
         <i class="bi bi-person position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
         <input
           type="text"
-          [(ngModel)]="username"
-          name="username"
+          [(ngModel)]="usuario"
+          id="usuario"
+          name="usuario"
           placeholder="Usuario"
           required
           class="form-control ps-5 py-2"
@@ -35,12 +36,14 @@
 
       <!-- Contraseña -->
       <div class="mb-3 position-relative">
+        <label for="Contraseña" class="form-label">Contraseña</label>
         <i class="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
         <input
           type="password"
           [(ngModel)]="password"
           name="password"
-          placeholder="Clave del cajero"
+          id="Contraseña"
+          placeholder="Clave "
           required
           class="form-control ps-5 py-2"
         />
@@ -56,7 +59,7 @@
 
       <!-- Crear usuario -->
       <div class="text-center">
-        <a href="#" (click)="createUser()" class="text-decoration-none fw-medium text-dark">
+        <a [routerLink]="['/register']" class="text-decoration-none fw-medium text-dark">
           Crear usuario
         </a>
       </div>

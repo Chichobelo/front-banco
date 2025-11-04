@@ -1,1 +1,98 @@
-<p>home works!</p>
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <app-side-bard></app-side-bard>
+
+  <!-- Contenido principal -->
+  <main class="main-content" [class.sidebar-open]="!isSidebarCollapsed">
+    <div class="dashboard-container mx-auto">
+      <!-- Encabezado -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="fw-bold mb-1">Bienvenido, {{ usuarioNombre }} </h3>
+          <p class="text-muted mb-0">Resumen de tus cuentas y movimientos</p>
+        </div>
+        
+      </div>
+
+      
+      <!-- Balance total -->
+<div class="card balance-card border-0 shadow-sm mb-4 p-4 text-center text-white position-relative">
+  <h6 class="text-light mb-2">Balance Total</h6>
+
+  <!-- Ojo para ocultar/mostrar -->
+  <button
+    type="button"
+    class="btn-eye position-absolute top-0 end-0 m-3 border-0 bg-transparent text-light"
+    (click)="toggleSaldo()"
+  >
+    <i [class]="mostrarSaldo ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+  </button>
+
+  <!-- Valor del saldo -->
+  <h1 class="fw-bold mb-0">
+    {{ mostrarSaldo ? ('$' + (balanceTotal | number : '1.2-2')) : '$$$$$$' }}
+  </h1>
+
+  <span class="text-light small d-block mt-2">COP - Pesos Colombianos</span>
+</div>
+
+
+      <!-- Cuentas -->
+      <div class="row g-3">
+        <div class="col-md-4" *ngFor="let cuenta of cuentas">
+          <div class="card border-0 shadow-sm p-3 h-100">
+            <div class="d-flex align-items-center mb-2">
+              <i [class]="cuenta.icono + ' fs-4 me-2 text-primary'"></i>
+              <div>
+                <h6 class="fw-semibold mb-0">{{ cuenta.tipo }}</h6>
+                <small class="text-muted">{{ cuenta.numero }}</small>
+              </div>
+            </div>
+
+            <h4 class="fw-bold mb-1">${{ cuenta.saldo | number : '1.2-2' }}</h4>
+
+            <div *ngIf="cuenta.cambio > 0" class="text-success small d-flex align-items-center gap-1">
+              <i class="bi bi-arrow-up"></i> +${{ cuenta.cambio | number : '1.2-2' }} ({{ cuenta.variacion }}%)
+            </div>
+
+            <div *ngIf="cuenta.cambio < 0" class="text-danger small d-flex align-items-center gap-1">
+              <i class="bi bi-arrow-down"></i> ${{ cuenta.cambio | number : '1.2-2' }} ({{ cuenta.variacion }}%)
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Encabezado de movimientos con acción discreta -->
+        <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+          <h6 class="fw-semibold mb-0">Movimientos recientes</h6>
+          <button class="btn btn-outline-secondary btn-sm btn-extracto" (click)="generarExtracto()">
+            <i class="bi bi-file-earmark-text me-1"></i> Exportar PDF
+          </button>
+        </div>
+
+      <!-- Movimientos recientes -->
+      <div>
+
+        <div class="card border-0 shadow-sm p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-0 fw-semibold">Amazon Colombia</h6>
+              <small class="text-muted">Compra - 2025-11-03</small>
+            </div>
+            <span class="text-danger fw-bold">-$125.000</span>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-0 fw-semibold">Empresa XYZ S.A.S</h6>
+              <small class="text-muted">Salario - 2025-11-01</small>
+            </div>
+            <span class="text-success fw-bold">+$4.500.000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

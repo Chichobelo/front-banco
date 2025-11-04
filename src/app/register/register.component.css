@@ -1,0 +1,172 @@
+/* === Fondo === */
+.register-wrapper {
+  background-color: #f8fbff;
+  min-height: 100dvh;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+}
+
+/* === Tarjeta === */
+.register-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 16px;
+  border: 1px solid #e1e5ec;
+  animation: fadeIn 0.5s ease;
+  padding: 0.7rem 0.7rem;
+  box-sizing: border-box;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Pasos === */
+.steps {
+  justify-content: center;
+  align-items: center;
+}
+
+.step {
+  text-align: center;
+}
+
+.circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #d0d7e3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-weight: 600;
+  margin-bottom: 4px;
+  background: #fff;
+}
+
+.step.active .circle {
+  background: #003e7d;
+  border-color: #003e7d;
+  color: #fff;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  background: #d0d7e3;
+  margin: 0 16px;
+  margin-top: 16px;
+}
+
+/* === Caja informativa === */
+.alert-box {
+  background: #f0f6ff;
+  border-left: 4px solid #003e7d;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+/* === Inputs === */
+.form-control,
+.form-select {
+  border: none;
+  border-bottom: 1px solid #c9d1e0;
+  border-radius: 0;
+  padding: 0.5rem 0.2rem;
+  font-size: 0.93rem;
+  background-color: transparent;
+  transition: border-color 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #003e7d;
+  box-shadow: none;
+}
+
+/* === Botones === */
+.btn-primary {
+  background: #003e7d;
+  border: none;
+  border-radius: 25px;
+  padding: 0.6rem;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background: #002b5c;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.text-link {
+  color: #003e7d;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+
+
+.line {
+  flex: 1;
+  height: 2px;
+  background: #d0d7e3;
+  margin: 0 16px;
+  margin-top: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.line.filled::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: #003e7d;
+  transition: width 0.4s ease;
+}
+
+.step.active .circle {
+  background: #003e7d;
+  border-color: #003e7d;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+
+/* === Responsivo === */
+@media (max-width: 768px) {
+  .register-card {
+    max-width: 99vw;
+    padding: 0.5rem 0.2rem;
+  }
+  .register-wrapper {
+    padding: 0.2rem 0;
+  }
+}

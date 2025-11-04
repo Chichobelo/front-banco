@@ -1,0 +1,181 @@
+@media (max-width: 991px) {
+  .main-content {
+    margin-top: 56px;
+  }
+}
+.dashboard-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+/* Contenedor principal */
+.main-content {
+  flex-grow: 1;
+  background-color: #fff;
+  transition: margin-left 0.3s cubic-bezier(.4,2,.6,1), filter 0.3s;
+  overflow: visible;
+  padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+  margin-left: 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.main-content.sidebar-open {
+  margin-left: 100px;
+  box-shadow: 0 0 24px 0 rgba(0,0,0,0.04);
+}
+/* Se evita el scrollbar interno; se usa el scroll del documento */
+
+/* Cuando el sidebar está colapsado */
+.main-content.sidebar-collapsed {
+  margin-left: 80px;
+}
+
+/* Cuando el sidebar está abierto */
+.main-content:not(.sidebar-collapsed) {
+  margin-left: 250px;
+}
+
+/* En móvil */
+@media (max-width: 991px) {
+  .main-content {
+    margin-left: 0;
+    transition: all 0.3s ease;
+  }
+
+  /* Efecto difuminado cuando el menú está abierto */
+  .sidebar-open .main-content {
+    filter: blur(3px);
+    pointer-events: none;
+  }
+}
+
+/* Contenedor del dashboard */
+.dashboard-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  padding: 2.5rem 2rem;
+  min-height: 90vh;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+@media (max-width: 991px) {
+  .dashboard-layout {
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .main-content {
+    margin-left: 0 !important;
+    padding: 1.2rem 0.5rem;
+    min-width: 0;
+    width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    transition: margin-left 0.3s cubic-bezier(.4,2,.6,1), filter 0.3s;
+  }
+  .main-content.sidebar-open {
+    margin-left: 60px;
+  }
+  .dashboard-container {
+    padding: 0.5rem 0.2rem;
+    border-radius: 0;
+    box-shadow: none;
+    min-width: 0;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+}
+
+/* Tarjetas */
+.card {
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+h1,
+h4,
+h6 {
+  color: #2d3436;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.bi {
+  vertical-align: middle;
+}
+
+/* === CARD BALANCE TOTAL === */
+.balance-card {
+  background: linear-gradient(135deg, #003366, #00509e);
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.balance-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* Botón del ojo */
+.btn-eye {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn-eye:hover {
+  transform: scale(1.1);
+  color: #bcdcff;
+}
+
+/* Transición del número al ocultar */
+.balance-card h1 {
+  transition: all 0.3s ease;
+}
+
+
+.btn-extracto {
+  background: transparent;
+  border: 1px solid #ced4da;
+  color: #495057;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+}
+
+.btn-extracto:hover {
+  background: #f8f9fa;
+  color: #343a40;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .balance-card {
+    padding: 1.5rem 1rem;
+    font-size: 0.95rem;
+  }
+  .btn-eye {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+

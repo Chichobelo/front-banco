@@ -97,3 +97,18 @@ input.form-control:focus {
 .login-bg {
   background-color: #ffffff !important;
 }
+
+/* Iconos centrados dentro del input */
+.input-with-icon .icon-inside {
+  position: absolute;
+  top: 50%;
+  left: 0.9rem;
+  transform: translateY(-50%);
+  color: #6c757d;
+  pointer-events: none;
+  font-size: 1rem;
+}
+
+.input-with-icon .form-control {
+  padding-left: 2.25rem; /* espacio para el ícono */
+}

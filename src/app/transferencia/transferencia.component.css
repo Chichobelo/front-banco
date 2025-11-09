@@ -1,60 +1,153 @@
-/* Page heading */
-.page-title { color: #2d3436; font-weight: 800; }
-.page-subtitle { margin-top: -0.25rem; }
-
-/* Card */
-.transfer-card { border-radius: 14px; }
-.form-label { font-weight: 600; }
-
-/* Input prefix */
-.prefix { background: #f1f5f9; border-color: #e2e8f0; font-weight: 600; }
-
-/* Security hint */
-.security-hint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.75rem 0.9rem; color: #46515e; }
-.security-hint i { font-size: 1.1rem; }
-
-/* Button */
-.btn-continue { background: #0b345d; border: none; padding: 0.75rem 1rem; font-weight: 600; }
-.btn-continue:hover { background: #072846; }
-
-/* Review card */
-.review-card { border-radius: 14px; }
-.review-alert { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.75rem 0.9rem; color: #46515e; }
-.review-alert i { font-size: 1.1rem; }
-.review-table { background: #f1f5f9; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
-.review-row { display: grid; grid-template-columns: 1fr auto; padding: 0.9rem 1rem; }
-.review-row.total .value { font-size: 1.4rem; font-weight: 800; color: #0b345d; }
-.review-row .label { color: #4b5563; font-weight: 600; }
-.review-row .value { color: #111827; min-width: 180px; }
-.review-table .divider { height: 1px; background: #e5e7eb; }
-
-.saldo-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.9rem 1rem; }
-.saldo-box .label { color: #4b5563; font-weight: 600; }
-.saldo-box .value { color: #0b345d; font-weight: 800; }
-
-/* Success screen */
-.success-wrap { max-width: 760px; margin: 0 auto; }
-.success-badge { width: 64px; height: 64px; border-radius: 50%; background: #e7f8ef; color: #0f9d58; display:flex; align-items:center; justify-content:center; font-size: 2rem; }
-.success-card { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 12px; max-width: 560px; }
-
-/* Page white container */
-.page-card { background: #fff; border-radius: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
-
-/* Sub-cards inside page container: subtle borders, no shadow */
-.transfer-card, .review-card { box-shadow: none !important; border: 1px solid #e9eef3; }
-
-/* Layout con sidebar fijo */
+/* Fondo general */
 .transfer-main {
-  margin-left: 220px; /* ancho del sidebar abierto */
-  min-height: 100vh;
-  padding: 1rem;
-  background: #fff;
-  overflow: visible; /* evita scroll interno */
+  margin-left: 220px;
+  min-height: calc(100vh - 32px); /* cabe en viewport con un pequeño margen */
+  background: linear-gradient(135deg, #f9fbfd, #e8f1fa);
+  padding: 1.25rem; /* menos padding para compactar */
 }
 
-@media (max-width: 991px) {
+/* Tarjeta principal */
+.page-card {
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 8px 25px rgba(11, 52, 93, 0.12);
+  padding: 1.25rem 1.25rem 1rem; /* compacto */
+  transition: all 0.3s ease;
+}
+.page-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(11, 52, 93, 0.18);
+}
+
+/* Títulos */
+.page-title {
+  color: #0b345d;
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+.page-subtitle {
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+/* Subtarjetas (formulario, revisión, éxito) */
+.transfer-card,
+.review-card {
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e3e8ef;
+  box-shadow: 0 2px 12px rgba(11, 52, 93, 0.05);
+  transition: 0.3s;
+}
+.transfer-card:hover,
+.review-card:hover {
+  box-shadow: 0 4px 20px rgba(11, 52, 93, 0.12);
+}
+
+/* Campos */
+.form-label {
+  font-weight: 600;
+  color: #334155;
+}
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  transition: all 0.25s ease;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #0b345d;
+  box-shadow: 0 0 0 3px rgba(11, 52, 93, 0.15);
+}
+
+/* Input prefix */
+.prefix {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #0b345d;
+  font-weight: 600;
+}
+
+/* Hint de seguridad */
+.security-hint {
+  background: #edf6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  color: #0b345d;
+  font-weight: 500;
+}
+.security-hint i {
+  font-size: 1.2rem;
+}
+
+/* Botones */
+.btn-continue {
+  background: linear-gradient(135deg, #0b345d, #114a86);
+  border: none;
+  padding: 0.7rem 1rem; /* botón más delgado */
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+.btn-continue:hover {
+  background: linear-gradient(135deg, #114a86, #0b345d);
+  transform: scale(1.02);
+}
+
+/* Revisión */
+.review-table {
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem; /* filas más compactas */
+  font-weight: 500;
+}
+.review-row.total .value {
+  font-size: 1.4rem;
+  color: #0b345d;
+  font-weight: 800;
+}
+
+/* Éxito */
+.success-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e6f9ef, #c4f2d8);
+  color: #0f9d58;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem; /* un poco más pequeño */
+  box-shadow: 0 4px 10px rgba(15, 157, 88, 0.2);
+}
+.success-card {
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .transfer-main {
-    margin-left: 0; /* en móvil el sidebar es deslizable */
-    overflow: visible;
+    margin-left: 0;
+    padding: 1rem;
   }
+  .page-card {
+    padding: 1rem;
+  }
+}
+
+/* Breakpoints desktop grandes: limitar ancho para que todo entre sin scroll vertical
+   (asumiendo sidebar visible). */
+@media (min-width: 992px) {
+  .container { max-width: 920px; }
+  .transfer-card, .review-card, .success-card { margin-bottom: 0.75rem; }
 }

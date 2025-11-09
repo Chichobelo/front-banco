@@ -8,8 +8,8 @@
   <!-- Tarjeta de login -->
   <div class="card shadow border-0 p-4" style="max-width: 380px; width: 100%; z-index: 10;">
       <div class="text-center mb-3">
-  <img src="assets/segure-bank-logo.png" alt="Segure Bank" style="height: 140px; width: auto;" />
-    </div>
+        <img id="bankLogo" src="/assets/segure-bank-logo.png" alt="Segure Bank" style="height: 140px; width: auto;" onerror="this.onerror=null; this.src='https://miro.medium.com/v2/resize:fit:640/format:webp/1*4oNWQCbibgtaD_0Z5RQtaA.png';" />
+      </div>
 
     <h2 class="text-center fw-bold mb-2">¡Hola!</h2>
     <p class="text-center text-muted mb-4">
@@ -18,35 +18,39 @@
 
     <form (ngSubmit)="onSubmit()">
       <!-- Usuario -->
-      <div class="mb-3 position-relative">
-        <i class="bi bi-person position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-        <input
-          type="text"
-          [(ngModel)]="usuario"
-          id="usuario"
-          name="usuario"
-          placeholder="Usuario"
-          required
-          class="form-control ps-5 py-2"
-        />
+      <div class="mb-3">
+        <div class="input-with-icon position-relative">
+          <i class="bi bi-person icon-inside"></i>
+          <input
+            type="text"
+            [(ngModel)]="usuario"
+            id="usuario"
+            name="usuario"
+            placeholder="Usuario"
+            required
+            class="form-control ps-5 py-2"
+          />
+        </div>
         <div class="text-end mt-1">
           <a href="#" (click)="forgotUsername()" class="small text-primary text-decoration-none">¿Olvidaste tu usuario?</a>
         </div>
       </div>
 
       <!-- Contraseña -->
-      <div class="mb-3 position-relative">
+      <div class="mb-3">
         <label for="Contraseña" class="form-label">Contraseña</label>
-        <i class="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-        <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          id="Contraseña"
-          placeholder="Clave "
-          required
-          class="form-control ps-5 py-2"
-        />
+        <div class="input-with-icon position-relative">
+          <i class="bi bi-lock icon-inside"></i>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            id="Contraseña"
+            placeholder="Clave "
+            required
+            class="form-control ps-5 py-2"
+          />
+        </div>
         <div class="text-end mt-1">
           <a href="#" (click)="forgotPassword()" class="small text-primary text-decoration-none">¿Olvidaste o bloqueaste tu clave?</a>
         </div>

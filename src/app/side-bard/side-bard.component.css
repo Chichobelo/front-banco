@@ -8,7 +8,7 @@
   border-radius: 8px;
   width: 35px; /* antes 48px */
   height: 35px; /* antes 48px */
-  display: flex;
+  display: none; /* oculto por defecto (escritorio) */
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
@@ -131,41 +131,33 @@
     transform: translateX(0);
   }
 
+  /* En móvil el sidebar NO se colapsa a ancho reducido, solo se oculta/mostrar */
   .sidebar.collapsed {
     width: 220px !important;
   }
 
   .hamburger-fixed {
-    display: flex;
+    display: flex; /* visible solo en móvil */
   }
 }
 
 @media (min-width: 992px) {
   .sidebar {
-    transition: width 0.5s cubic-bezier(.4, 2, .6, 1), background 0.3s;
+    width: 220px !important; /* ancho fijo en escritorio */
+    transition: background 0.3s;
   }
 
+  /* Ignoramos estado collapsed para mantener sidebar estático */
   .sidebar.collapsed {
-    width: 75px !important;
-    overflow-x: hidden;
-  }
-
-  .sidebar:not(.collapsed) {
     width: 220px !important;
   }
 
   .sidebar .nav-link span {
-    transition: opacity 0.3s;
     opacity: 1;
   }
 
-  .sidebar.collapsed .nav-link span {
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .hamburger-fixed {
-    display: flex;
+    display: none; /* ocultar hamburguesa en escritorio */
   }
 }
 

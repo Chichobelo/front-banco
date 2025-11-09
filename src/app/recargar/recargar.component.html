@@ -1,0 +1,83 @@
+<div class="dashboard-layout">
+  <app-side-bard></app-side-bard>
+  <main class="recarga-main">
+    <div class="container py-3">
+      <div class="page-card p-3 p-md-4">
+        <h2 class="page-title">Recargar saldo</h2>
+        <p class="page-subtitle text-muted">Aumenta el saldo de tu línea móvil de forma segura</p>
+
+        @if (step === 'form') {
+        <div class="card recarga-card p-3 p-md-4">
+          <div class="card-title mb-3">
+            <h6 class="fw-semibold mb-1">Nueva recarga</h6>
+            <small class="text-muted">Ingresa los datos de la recarga</small>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Operador</label>
+              <select class="form-select" [(ngModel)]="operador">
+                <option value="" disabled [selected]="!operador">Selecciona operador</option>
+                <option *ngFor="let op of operadores" [value]="op">{{ op }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Número / Línea</label>
+              <input class="form-control" placeholder="Ej: 3001234567" [(ngModel)]="numero" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Monto</label>
+              <div class="input-group">
+                <span class="input-group-text prefix">$</span>
+                <input type="number" class="form-control text-end" min="0" step="1000" placeholder="0" [(ngModel)]="monto" />
+              </div>
+            </div>
+          </div>
+
+          <div class="security-hint d-flex align-items-center gap-2 mt-3">
+            <i class="bi bi-shield-check text-primary"></i>
+            <small>Verifica que el número sea correcto antes de confirmar.</small>
+          </div>
+
+          <div class="mt-3">
+            <button class="btn btn-primary w-100" [disabled]="!isFormValid" (click)="confirmarRecarga()">
+              Recargar <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+        </div>
+        }
+
+        @if (step === 'success') {
+        <div class="success-wrap text-center">
+          <div class="success-badge mx-auto mb-3">
+            <i class="bi bi-check2"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Recarga exitosa</h3>
+          <p class="text-muted mb-4">Tu saldo se ha actualizado correctamente</p>
+
+          <div class="success-card text-start mx-auto p-3 p-md-4">
+            <div class="row g-2">
+              <div class="col-6 text-muted">Operador</div>
+              <div class="col-6 text-end fw-bold">{{ operador }}</div>
+              <div class="col-12"><hr></div>
+              <div class="col-6 text-muted">Número</div>
+              <div class="col-6 text-end">{{ numero }}</div>
+              <div class="col-12"><hr></div>
+              <div class="col-6 text-muted">Monto</div>
+              <div class="col-6 text-end fw-bold">${{ (monto || 0) | number:'1.0-0' }}</div>
+              <div class="col-12"><hr></div>
+              <div class="col-6 text-muted">Referencia</div>
+              <div class="col-6 text-end">{{ referencia }}</div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-column flex-md-row gap-2 justify-content-center mt-3">
+            <button class="btn btn-light" (click)="step='form'">Nueva recarga</button>
+            <button class="btn btn-primary" (click)="descargarComprobante()">Descargar comprobante</button>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

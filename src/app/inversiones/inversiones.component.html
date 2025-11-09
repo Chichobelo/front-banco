@@ -1,0 +1,138 @@
+<div class="dashboard-layout">
+  <app-side-bard></app-side-bard>
+  <main class="inversiones-main">
+    <div class="container py-3">
+      <div class="page-card p-3 p-md-4">
+        <div class="toolbar d-flex flex-wrap justify-content-between align-items-start mb-3">
+          <div class="titles">
+            <h2 class="page-title mb-0">Inversiones</h2>
+            <p class="page-subtitle text-muted mb-0">Resumen inteligente de tu portafolio</p>
+          </div>
+          <div class="kpi-group d-flex flex-wrap gap-3 mt-3 mt-md-0">
+            <div class="kpi-card">
+              <span class="label">Valor Portafolio</span>
+              <strong>{{ formatMoney(portfolioValue) }}</strong>
+              <small [class.text-success]="dailyChange>=0" [class.text-danger]="dailyChange<0">
+                {{ dailyChange>=0 ? '+' : ''}}{{ formatMoney(dailyChange) }} ({{ dailyChangePct | number:'1.2-2'}}%)
+              </small>
+            </div>
+            <div class="kpi-card">
+              <span class="label">Activos</span>
+              <strong>{{ posiciones.length }}</strong>
+              <small class="text-muted">Diversificación</small>
+            </div>
+            <div class="kpi-card">
+              <span class="label">Última actualización</span>
+              <strong>{{ lastUpdate() ? (lastUpdate() | date:'HH:mm:ss') : '—' }}</strong>
+              <small class="text-muted">Tiempo real simulado</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid principal -->
+        <div class="row g-3">
+          <div class="col-lg-8">
+            <div class="panel panel-evolution p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0 fw-semibold">Evolución</h6>
+                <small class="text-muted">Últimas 24 unidades</small>
+              </div>
+              <div class="spark-wrapper">
+                <svg viewBox="0 0 400 120" preserveAspectRatio="none" class="spark-svg">
+                  <polyline
+                    [attr.points]="sparkPolyline"
+                    fill="none" stroke="#0b345d" stroke-width="2" stroke-linejoin="round" />
+                  <defs>
+                    <linearGradient id="gradFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0b345d" stop-opacity="0.35" />
+                      <stop offset="100%" stop-color="#0b345d" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon
+                    [attr.points]="sparkPolygon"
+                    fill="url(#gradFill)" opacity="0.6" />
+                </svg>
+              </div>
+            </div>
+            <div class="panel panel-positions p-3 mt-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0 fw-semibold">Posiciones</h6>
+                <small class="text-muted">Detalle actual</small>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-modern align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Activo</th>
+                      <th>Tipo</th>
+                      <th class="text-end">Cantidad</th>
+                      <th class="text-end">Precio</th>
+                      <th class="text-end">Valor</th>
+                      <th class="text-end">Cambio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let p of posiciones" class="row-hover">
+                      <td class="fw-semibold">{{ p.asset }}</td>
+                      <td><span class="badge rounded-pill tipo-badge" [attr.data-type]="p.type">{{ p.type }}</span></td>
+                      <td class="text-end">{{ p.amount }}</td>
+                      <td class="text-end">{{ formatMoney(p.price) }}</td>
+                      <td class="text-end">{{ formatMoney(p.amount * p.price) }}</td>
+                      <td class="text-end" [class.text-success]="p.changePct>=0" [class.text-danger]="p.changePct<0">
+                        {{ p.changePct>=0?'+':'' }}{{ p.changePct | number:'1.2-2'}}%
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-allocation p-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0 fw-semibold">Distribución</h6>
+                <small class="text-muted">Por tipo de activo</small>
+              </div>
+              <div class="allocation-chart position-relative">
+                <svg viewBox="0 0 220 220" class="pie-svg">
+                  <ng-container *ngIf="allocationView.length">
+                    <ng-container *ngFor="let a of allocationView; let i = index">
+                      <circle
+                        r="90" cx="110" cy="110"
+                        [attr.stroke-dasharray]="a.dasharray"
+                        [attr.stroke-dashoffset]="a.dashoffset"
+                        [attr.stroke]="a.color" stroke-width="22" fill="transparent"
+                        stroke-linecap="butt" class="pie-slice" />
+                    </ng-container>
+                  </ng-container>
+                </svg>
+                <div class="pie-center d-flex flex-column align-items-center justify-content-center">
+                  <strong class="mb-0">{{ allocation.length }} tipos</strong>
+                  <small class="text-muted">Diversificación</small>
+                </div>
+              </div>
+              <ul class="list-unstyled allocation-legend mt-3 mb-0">
+                <li *ngFor="let a of allocationView" class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="color-dot" [style.background]="a.color"></span>
+                    <span>{{ a.label }}</span>
+                  </div>
+                  <span class="fw-semibold">{{ a.percent | number:'1.0-1'}}%</span>
+                </li>
+              </ul>
+            </div>
+            <div class="panel panel-actions p-3">
+              <h6 class="fw-semibold mb-2">Acciones rápidas</h6>
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm">Comprar activo</button>
+                <button class="btn btn-outline-secondary btn-sm">Vender activo</button>
+                <button class="btn btn-outline-dark btn-sm">Rebalancear</button>
+              </div>
+              <small class="text-muted d-block mt-3">Simulado: integra tu backend para operaciones reales.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

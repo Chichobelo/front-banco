@@ -1,13 +1,13 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-side-bard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, NgIf, NgFor, RouterModule],
   templateUrl: './side-bard.component.html',
   styleUrls: ['./side-bard.component.css']
 })
@@ -16,11 +16,31 @@ export class SideBardComponent {
   isOpen = false;
   isMobile = false;
   activeAccordion: string | null = null;
+  usuarioNombre: string = '';
 
+
+  ngOnInit() {
+    this.usuarioNombre = localStorage.getItem('username') || 'Usuario';
+    // Restaurar estado del acordeón si existe
+    const storedAccordion = localStorage.getItem('sidebarActiveAccordion');
+    this.activeAccordion = storedAccordion ? storedAccordion : null;
+
+    // Si no hay estado guardado, abrir automáticamente el acordeón del menú
+    // que contenga la ruta actual (por ejemplo, transferencia/recargar/pagar-facturas)
+    if (!this.activeAccordion) {
+      const current = this.router.url;
+      for (const item of this.menuItems) {
+        if (item.children?.some((c: any) => current.startsWith(c.link))) {
+          this.activeAccordion = item.label;
+          break;
+        }
+      }
+    }
+  }
   user = {
     name: 'Juan Pérez',
     role: 'Cliente Premium',
-    initials: 'JD'
+    initials: ''
   };
 
   menuItems = [
@@ -51,7 +71,8 @@ export class SideBardComponent {
       confirmButtonText: 'Sí, salir',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#003e7d',
-      cancelButtonColor: '#888'
+      cancelButtonColor: '#888',
+      position: 'center'
     }).then(result => {
       if (result.isConfirmed) {
         localStorage.clear();
@@ -69,7 +90,13 @@ export class SideBardComponent {
   }
 
   toggleAccordion(label: string) {
+    // Alternar pero persistir estado para no cerrarse al navegar
     this.activeAccordion = this.activeAccordion === label ? null : label;
+    if (this.activeAccordion) {
+      localStorage.setItem('sidebarActiveAccordion', this.activeAccordion);
+    } else {
+      localStorage.removeItem('sidebarActiveAccordion');
+    }
   }
 
   @HostListener('window:resize')

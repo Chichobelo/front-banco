@@ -1,0 +1,53 @@
+/* Layout base alineado con transferencia */
+.recarga-main {
+	margin-left: 220px;
+	min-height: calc(100vh - 32px);
+	background: linear-gradient(135deg, #f9fbfd, #e8f1fa);
+	padding: 1.25rem;
+}
+
+@media (max-width: 768px) {
+	.recarga-main { margin-left:0; padding:1rem; }
+}
+
+/* Tarjeta contenedora */
+.page-card {
+	background: #ffffff;
+	border-radius: 22px;
+	box-shadow: 0 8px 25px rgba(11, 52, 93, 0.12);
+	padding: 1.25rem 1.25rem 1rem;
+	border: 1px solid #e3e8ef;
+}
+.page-title { color:#0b345d; font-weight:800; font-size:1.5rem; margin:0 0 4px 0; }
+.page-subtitle { color:#64748b; margin:0 0 12px 0; }
+
+/* Card del formulario */
+.recarga-card {
+	border-radius:16px;
+	background:#fff;
+	border:1px solid #e3e8ef;
+	box-shadow:0 2px 12px rgba(11,52,93,0.05);
+}
+.recarga-card:hover { box-shadow:0 4px 20px rgba(11,52,93,0.12); }
+
+/* Campos */
+.form-label { font-weight:600; color:#334155; }
+.form-control,.form-select { border-radius:10px; border:1px solid #cbd5e1; transition:.25s; }
+.form-control:focus,.form-select:focus { border-color:#0b345d; box-shadow:0 0 0 3px rgba(11,52,93,.15); }
+.recarga-card .input-group .prefix { background:#f1f5f9; border-color:#e2e8f0; color:#0b345d; font-weight:600; }
+.recarga-card .form-control { text-align:left; }
+
+/* Hint seguridad */
+.security-hint { background:#edf6ff; border:1px solid #dbeafe; border-radius:10px; padding:.75rem .9rem; color:#0b345d; font-weight:500; margin-top:.75rem; }
+.security-hint i { font-size:1.2rem; }
+.security-hint small { color:#0b345d; }
+
+/* Botón principal */
+.btn-primary { background:linear-gradient(135deg,#0b345d,#114a86); border:none; padding:.7rem 1rem; font-weight:600; border-radius:12px; transition:.25s; }
+.btn-primary:hover { background:linear-gradient(135deg,#114a86,#0b345d); transform:scale(1.02); }
+
+/* Éxito */
+.success-badge { width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,#e6f9ef,#c4f2d8); color:#0f9d58; display:flex; align-items:center; justify-content:center; font-size:1.8rem; box-shadow:0 4px 10px rgba(15,157,88,.2); }
+.success-card { background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0; max-width:560px; }
+
+@media (min-width: 992px) { .container { max-width:920px; } }

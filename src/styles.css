@@ -18,3 +18,21 @@ html, body {
 html, body {
 	overflow-x: hidden;
 }
+
+/* === SweetAlert2 centrar forzado === */
+.swal2-container {
+	align-items: center !important;
+	justify-content: center !important;
+}
+.swal2-popup {
+	margin: 0 !important;
+}
+
+/* Si en algún flujo se usa toast:true, evitar posición fija lateral */
+.swal2-container.swal2-top-end, 
+.swal2-container.swal2-top-right,
+.swal2-container.swal2-bottom-end,
+.swal2-container.swal2-bottom-right {
+	align-items: center !important;
+	justify-content: center !important;
+}

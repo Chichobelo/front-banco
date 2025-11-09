@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SideBardComponent } from '../side-bard/side-bard.component';
+import { LedgerService, Cuenta, Movimiento } from '../service/ledger.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -13,50 +14,34 @@ import autoTable from 'jspdf-autotable';
 })
 export class HomeComponent implements OnInit {
   usuarioNombre: string = '';
-  balanceTotal: number = 174128.9;
+  balanceTotal: number = 0;
   isSidebarCollapsed: boolean = false;
   mostrarSaldo: boolean = true;
 
-  cuentas = [
-    {
-      tipo: 'Cuenta Corriente',
-      numero: '****4521',
-      saldo: 45678.9,
-      cambio: 1234.5,
-      variacion: 2.78,
-      icono: 'bi bi-wallet2',
-    },
-    {
-      tipo: 'Cuenta de Ahorros',
-      numero: '****8932',
-      saldo: 128450.0,
-      cambio: 5678.0,
-      variacion: 4.62,
-      icono: 'bi bi-piggy-bank',
-    },
-    {
-      tipo: 'Tarjeta de Crédito',
-      numero: '****3456',
-      saldo: 3250.75,
-      cambio: -450.25,
-      variacion: -16.08,
-      icono: 'bi bi-credit-card-2-front',
-    },
-  ];
+  cuentas: Cuenta[] = [];
 
-  movimientos = [
-    { fecha: '2025-11-03', descripcion: 'Compra Amazon Colombia', referencia: '0001234', documento: 'INV-001', valor: -125000 },
-    { fecha: '2025-11-01', descripcion: 'Pago Empresa XYZ S.A.S', referencia: '0001235', documento: 'PAY-001', valor: 4500000 },
-    { fecha: '2025-10-30', descripcion: 'Recarga celular', referencia: '0001236', documento: 'TRX-008', valor: -25000 },
-    { fecha: '2025-10-27', descripcion: 'Transferencia recibida', referencia: '0001237', documento: 'TRX-009', valor: 1250000 },
-  ];
+  movimientos: Movimiento[] = [];
+
+  constructor(private ledger: LedgerService) {}
 
   ngOnInit() {
     this.usuarioNombre = localStorage.getItem('username') || 'Usuario';
+    // Asegura cargar el ledger específico del usuario (si no existe crea uno con saldo inicial)
+    this.ledger.reloadForCurrentUser();
+    this.ledger.state$.subscribe(state => {
+      this.cuentas = state.cuentas;
+      this.movimientos = state.movimientos.slice(0, 20); // últimos 20
+      this.balanceTotal = this.cuentas.reduce((acc, c) => acc + c.saldo, 0);
+    });
   }
 
   toggleSaldo() {
     this.mostrarSaldo = !this.mostrarSaldo;
+  }
+
+  // Restablece saldo del usuario a 1,000,000 COP (solo Cuenta de Ahorros) y limpia historial
+  restablecerSaldo() {
+    this.ledger.resetToMillion();
   }
 
   // Lee un Blob como DataURL
@@ -191,8 +176,8 @@ export class HomeComponent implements OnInit {
       alternateRowStyles: { fillColor: [240, 240, 240] },
     });
 
-  // Total
-  const total = this.movimientos.reduce((acc, m) => acc + m.valor, 0);
+  // Saldo final (suma de cuentas actuales)
+  const total = this.cuentas.reduce((acc, c) => acc + c.saldo, 0);
   doc.setFontSize(11);
   // Posición segura tras la tabla
   const finalY = ((doc as any).lastAutoTable?.finalY ?? 40);

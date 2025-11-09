@@ -31,7 +31,8 @@ export class RegisterComponent {
         icon: 'warning',
         title: 'Campos incompletos',
         text: 'Por favor completa todos los campos antes de continuar.',
-        confirmButtonColor: '#003e7d'
+        confirmButtonColor: '#003e7d',
+        position: 'center'
       });
       return;
     }
@@ -53,7 +54,8 @@ export class RegisterComponent {
           icon: 'warning',
           title: 'Datos faltantes',
           text: 'Debes ingresar un usuario y una contraseña.',
-          confirmButtonColor: '#003e7d'
+          confirmButtonColor: '#003e7d',
+          position: 'center'
         });
         return;
       }
@@ -64,6 +66,7 @@ export class RegisterComponent {
         title: '¡Usuario creado!',
         text: `El usuario ${this.user.username} ha sido registrado correctamente.`,
         confirmButtonColor: '#003e7d',
+        position: 'center',
         timer: 2500,
         timerProgressBar: true
       }).then(() => {

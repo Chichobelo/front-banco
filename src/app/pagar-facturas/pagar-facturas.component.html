@@ -1,0 +1,198 @@
+<div class="dashboard-layout">
+  <app-side-bard></app-side-bard>
+  <main class="pagar-main">
+    <div class="container py-3">
+  <div class="page-card p-3 p-md-4" [class.blur-bg]="modalOpen">
+        <div class="toolbar d-flex flex-wrap justify-content-between align-items-center mb-3">
+          <div class="titles">
+            <h2 class="page-title mb-0">Pagar facturas</h2>
+            <p class="page-subtitle text-muted mb-0">Administra y paga tus facturas en un solo lugar</p>
+          </div>
+          <div class="actions d-flex align-items-center gap-2 mt-2 mt-md-0">
+            <span class="chip-pending">Pendientes: {{ pendientesCount }}</span>
+            <button class="btn btn-primary" (click)="openAddModal()">
+              <i class="bi bi-plus-circle"></i>
+              <span class="ms-1">Nueva factura</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- listado permanece limpio; modales se renderizan fuera -->
+
+  @if (selected && modalView==='detail') {
+        <div class="success-card text-start mx-auto p-3 p-md-4 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Factura seleccionada</h6>
+            <span class="badge" [class.bg-success]="selected.estado==='pagada'" [class.bg-warning]="selected.estado==='pendiente'">
+              {{ selected.estado | titlecase }}
+            </span>
+          </div>
+          <div class="row g-2">
+            <div class="col-6 text-muted">Servicio</div>
+            <div class="col-6 text-end fw-bold">{{ selected.servicio }}</div>
+            <div class="col-12"><hr></div>
+            <div class="col-6 text-muted">Empresa</div>
+            <div class="col-6 text-end">{{ selected.empresa }}</div>
+            <div class="col-12"><hr></div>
+            <div class="col-6 text-muted">Referencia</div>
+            <div class="col-6 text-end">{{ selected.referencia }}</div>
+            <div class="col-12"><hr></div>
+            <div class="col-6 text-muted">Monto</div>
+            <div class="col-6 text-end fw-bold">${{ (selected.monto || 0) | number:'1.0-0' }}</div>
+            <div class="col-12" *ngIf="selected.fechaLimite"><hr></div>
+            <div class="col-6 text-muted" *ngIf="selected.fechaLimite">Fecha límite</div>
+            <div class="col-6 text-end" *ngIf="selected.fechaLimite">{{ selected.fechaLimite }}</div>
+          </div>
+          <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-3">
+            <button class="btn btn-light" (click)="closeModal()">Cerrar</button>
+            <button class="btn btn-secondary" (click)="descargarComprobante(selected)" [disabled]="selected.estado!=='pagada'">Descargar comprobante</button>
+            <button class="btn btn-primary" (click)="pagar(selected)" [disabled]="selected.estado==='pagada'">Pagar ahora</button>
+          </div>
+        </div>
+        }
+
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+          <h6 class="fw-semibold mb-0">Mis facturas</h6>
+        </div>
+
+        <div class="card border-0 shadow-sm table-card">
+          <div class="table-responsive">
+            <table class="table table-modern align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Servicio</th>
+                  <th>Empresa</th>
+                  <th>Referencia</th>
+                  <th class="text-end">Monto</th>
+                  <th>Estado</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let f of facturas" class="row-hover">
+                  <td>{{ f.servicio }}</td>
+                  <td>{{ f.empresa }}</td>
+                  <td>{{ f.referencia }}</td>
+                  <td class="text-end">${{ f.monto | number:'1.0-0' }}</td>
+                  <td>
+                    <span class="badge rounded-pill" [class.bg-success]="f.estado==='pagada'" [class.bg-warning]="f.estado==='pendiente'">
+                      {{ f.estado | titlecase }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button class="btn btn-light btn-ghost" (click)="verFactura(f)"><i class="bi bi-eye"></i> Ver</button>
+                      <button class="btn btn-light btn-ghost text-primary" (click)="pagar(f)" [disabled]="f.estado==='pagada'"><i class="bi bi-cash-coin"></i> Pagar</button>
+                      <button class="btn btn-light btn-ghost text-success" (click)="descargarComprobante(f)" [disabled]="f.estado!=='pagada'"><i class="bi bi-download"></i> Descargar</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Fullscreen Limpio -->
+@if (modalOpen) {
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-shell" (click)="$event.stopPropagation()">
+    @if (modalView === 'add') {
+    <div class="modal-card">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-file-earmark-plus"></i> Nueva factura</h5>
+        <button class="btn btn-sm btn-light" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Servicio</label>
+          <select class="form-select" [(ngModel)]="servicio">
+            <option value="" disabled [selected]="!servicio">Selecciona servicio</option>
+            <option *ngFor="let s of servicios" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Empresa</label>
+          <input class="form-control" [(ngModel)]="empresa" placeholder="Escribe el nombre de la empresa" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Referencia</label>
+          <input class="form-control" placeholder="Ej: 123456789" [(ngModel)]="referencia" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Monto</label>
+          <div class="input-group">
+            <span class="input-group-text prefix">$</span>
+            <input type="number" class="form-control text-end" min="0" step="1000" placeholder="0" [(ngModel)]="monto" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Fecha límite (opcional)</label>
+          <input type="date" class="form-control" [(ngModel)]="fechaLimite" />
+        </div>
+      </div>
+      <div class="security-hint d-flex align-items-center gap-2 mt-3 small">
+        <i class="bi bi-shield-check text-primary"></i>
+        <span>Revisa los datos antes de guardar.</span>
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-light flex-grow-1" (click)="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-grow-1" [disabled]="!isFormValid" (click)="agregarFactura()">Guardar factura</button>
+      </div>
+    </div>
+    }
+    @if (modalView === 'detail') {
+    <div class="modal-card">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0 d-flex align-items-center gap-2"><i class="bi bi-file-earmark-text"></i> Factura</h5>
+        <button class="btn btn-sm btn-light" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="row g-3 mb-2">
+        <div class="col-6 text-muted">Servicio</div>
+        <div class="col-6 text-end fw-semibold">{{ selected?.servicio }}</div>
+        <div class="col-6 text-muted">Empresa</div>
+        <div class="col-6 text-end">{{ selected?.empresa }}</div>
+        <div class="col-6 text-muted">Referencia</div>
+        <div class="col-6 text-end">{{ selected?.referencia }}</div>
+        <div class="col-6 text-muted">Monto</div>
+        <div class="col-6 text-end fw-semibold">${{ (selected?.monto || 0) | number:'1.0-0' }}</div>
+        <div class="col-6 text-muted" *ngIf="selected?.fechaLimite">Fecha límite</div>
+        <div class="col-6 text-end" *ngIf="selected?.fechaLimite">{{ selected?.fechaLimite }}</div>
+        <div class="col-6 text-muted">Estado</div>
+        <div class="col-6 text-end">
+          <span class="badge rounded-pill" [class.bg-success]="selected?.estado==='pagada'" [class.bg-warning]="selected?.estado==='pendiente'">{{ selected?.estado | titlecase }}</span>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-2">
+        <button class="btn btn-light flex-grow-1" (click)="closeModal()">Cerrar</button>
+        <button class="btn btn-secondary flex-grow-1" (click)="descargarComprobante(selected!)" [disabled]="selected?.estado!=='pagada'">Descargar</button>
+        <button class="btn btn-primary flex-grow-1" (click)="pagar(selected!)" [disabled]="selected?.estado==='pagada'">Pagar</button>
+      </div>
+    </div>
+    }
+    @if (modalView === 'confirm') {
+    <div class="modal-card text-center">
+      <div class="success-badge mx-auto mb-3" style="background:linear-gradient(135deg,#fff0e0,#ffd4b4); color:#b45309;"><i class="bi bi-question-lg"></i></div>
+      <h5 class="fw-bold mb-2">Confirmar pago</h5>
+      <p class="text-muted mb-3">Vas a pagar la factura <strong>{{ selected?.referencia }}</strong> por <strong>${{ (selected?.monto||0) | number:'1.0-0' }}</strong>. ¿Deseas continuar?</p>
+      <div class="d-flex flex-column flex-md-row gap-2 mt-2">
+        <button class="btn btn-light flex-grow-1" (click)="modalView='detail'">Cancelar</button>
+        <button class="btn btn-primary flex-grow-1" (click)="confirmarPago()">Sí, pagar ahora</button>
+      </div>
+    </div>
+    }
+    @if (modalView === 'success') {
+    <div class="modal-card success-modal text-center">
+      <div class="success-badge mx-auto mb-3"><i class="bi bi-check2"></i></div>
+      <h5 class="fw-bold mb-1">Pago exitoso</h5>
+      <p class="text-muted mb-3">La factura fue pagada correctamente.</p>
+      <button class="btn btn-primary w-100 mb-2" (click)="descargarComprobante(selected!)">Descargar comprobante</button>
+      <button class="btn btn-light w-100" (click)="closeModal()">Cerrar</button>
+    </div>
+    }
+  </div>
+</div>
+}

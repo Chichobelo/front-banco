@@ -114,6 +114,11 @@ h6 {
   color: #2d3436;
 }
 
+/* For the main balance number, force white color inside balance card */
+.balance-card h1 {
+  color: #ffffff !important;
+}
+
 .text-muted {
   color: #6c757d !important;
 }

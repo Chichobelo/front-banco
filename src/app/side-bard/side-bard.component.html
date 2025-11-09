@@ -1,7 +1,8 @@
 
 <!-- Botón hamburguesa (siempre visible y fijo arriba a la izquierda, colapsa/expande en desktop y abre/cierra en móvil) -->
 <div class="hamburger-fixed">
-  <span class="hamburger-icon" (click)="isMobile ? toggleSidebar() : toggleCollapse()" aria-label="Abrir/Colapsar menú">
+  <!-- En escritorio (>=992px) se oculta el botón hamburguesa; en móvil abre/cierra el menú -->
+  <span class="hamburger-icon" (click)="isMobile && toggleSidebar()" aria-label="Abrir menú móvil">
     <span></span>
     <span></span>
     <span></span>
@@ -58,8 +59,7 @@
   <div class="sidebar-footer mt-auto text-center pt-3" *ngIf="!isCollapsed">
     <hr class="border-secondary" />
     <div class="user-info text-white mb-3">
-      <div class="avatar bg-white text-primary fw-bold mx-auto mb-2">{{ user.initials }}</div>
-      <p class="mb-0">{{ user.name }}</p>
+      <p class="mb-0">{{ usuarioNombre }}</p>
       <small class="text-white-50">{{ user.role }}</small>
     </div>
     <button class="btn btn-link text-white logout-btn mt-2" (click)="confirmLogout()" title="Salir de la app">

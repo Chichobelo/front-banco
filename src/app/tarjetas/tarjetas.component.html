@@ -1,0 +1,144 @@
+<div class="dashboard-layout">
+  <app-side-bard></app-side-bard>
+  <main class="tarjetas-main">
+    <div class="container py-3">
+      <div class="page-card p-3 p-md-4" [class.blur-bg]="modalOpen">
+        <div class="toolbar d-flex flex-wrap justify-content-between align-items-center mb-3">
+          <div>
+            <h2 class="page-title mb-0">Tarjetas</h2>
+            <p class="page-subtitle mb-0">Hola, {{ usuarioNombre }} — Administra y controla tus tarjetas en tiempo real</p>
+          </div>
+          <div class="d-flex gap-2 mt-3 mt-md-0">
+            <button class="btn btn-primary" (click)="openAdd()"><i class="bi bi-plus-circle"></i> Nueva tarjeta</button>
+          </div>
+        </div>
+
+        <!-- Grid de tarjetas -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-4" *ngFor="let t of tarjetas">
+            <div class="card3d"
+                 [style.background]="'linear-gradient(135deg,' + t.color + ', #1e293b)'"
+                 [class.bloqueada]="t.bloqueada"
+                 (click)="openDetail(t)">
+              <div class="chip"></div>
+              <div class="marca" [class.visa]="t.tipo==='Crédito'" [class.debito]="t.tipo==='Débito'">{{ t.tipo }}</div>
+              <div class="numero d-flex align-items-center justify-content-between">
+                <span>{{ t.numero }}</span>
+                <button class="btn btn-sm btn-toggle" (click)="$event.stopPropagation(); toggleMostrarNumero(t)" [disabled]="t.bloqueada">
+                  <i class="bi" [ngClass]="t.masked ? 'bi-eye' : 'bi-eye-slash'"></i>
+                </button>
+              </div>
+              <div class="alias d-flex justify-content-between align-items-center">
+                <span>{{ t.alias }}</span>
+                <i *ngIf="t.bloqueada" class="bi bi-lock-fill"></i>
+              </div>
+              <div class="footer d-flex justify-content-between small">
+                <span>{{ usuarioNombre || t.titular }}</span>
+                <span>{{ t.vence }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalle seleccionado (desktop) -->
+        <div *ngIf="selected && modalView==='detail'" class="detail-card p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="fw-semibold mb-0">{{ selected.alias }} <span class="badge ms-2" [class.bg-success]="!selected.bloqueada" [class.bg-danger]="selected.bloqueada">{{ selected.bloqueada ? 'Bloqueada' : 'Activa' }}</span></h6>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary" (click)="toggleBloqueo(selected)">{{ selected.bloqueada ? 'Desbloquear' : 'Bloquear' }}</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="eliminar(selected)"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+          <div class="row g-2 small mb-3">
+            <div class="col-6 text-muted">Número</div>
+            <div class="col-6 text-end">
+              {{ selected.numero }}
+              <button class="btn btn-sm btn-light ms-1" (click)="toggleMostrarNumero(selected)">
+                <i class="bi" [ngClass]="selected.masked ? 'bi-eye' : 'bi-eye-slash'"></i>
+              </button>
+            </div>
+            <div class="col-6 text-muted">Titular</div><div class="col-6 text-end">{{ selected.titular }}</div>
+            <div class="col-6 text-muted">Vence</div><div class="col-6 text-end">{{ selected.vence }}</div>
+            <div class="col-6 text-muted">Tipo</div><div class="col-6 text-end">{{ selected.tipo }}</div>
+            <div *ngIf="selected.tipo==='Crédito'" class="col-12 mt-2">
+              <div class="limit-wrapper">
+                <div class="radial" [style.--progress]="progreso + '%'">
+                  <div class="inner">
+                    <small>Uso</small>
+                    <strong>{{ progreso | number:'1.0-0'}}%</strong>
+                  </div>
+                </div>
+                <div class="limite-info">
+                  <div><small class="text-muted">Límite</small><br><span class="fw-semibold">{{ selected.limite | number:'1.0-0' }}</span></div>
+                  <div><small class="text-muted">Usado</small><br><span class="text-danger">{{ selected.usado | number:'1.0-0' }}</span></div>
+                  <div><small class="text-muted">Disponible</small><br><span class="text-success">{{ (selected.limite - selected.usado) | number:'1.0-0' }}</span></div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-sm btn-outline-primary" (click)="simularUso(selected)" [disabled]="selected.bloqueada">Simular compra</button>
+                <button class="btn btn-sm btn-outline-success" (click)="reducirUso(selected)" [disabled]="selected.bloqueada">Registrar pago</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal para agregar -->
+<div class="modal-overlay" *ngIf="modalOpen && modalView==='add'" (click)="closeModal()">
+  <div class="modal-shell" (click)="$event.stopPropagation()">
+    <div class="modal-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0"><i class="bi bi-credit-card"></i> Nueva tarjeta</h5>
+        <button class="btn btn-sm btn-light" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Alias</label>
+          <input class="form-control" [(ngModel)]="alias" placeholder="Ej: Mi Visa" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Últimos 4 dígitos</label>
+          <input class="form-control" maxlength="4" [(ngModel)]="numero" placeholder="1234" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Titular</label>
+          <input class="form-control" [(ngModel)]="titular" placeholder="Nombre en la tarjeta" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Vence (MM/AA)</label>
+          <input class="form-control" [(ngModel)]="vence" placeholder="08/27" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Tipo</label>
+          <select class="form-select" [(ngModel)]="tipo">
+            <option value="" disabled selected>Selecciona</option>
+            <option value="Crédito">Crédito</option>
+            <option value="Débito">Débito</option>
+          </select>
+        </div>
+        <div class="col-md-6" *ngIf="tipo==='Crédito'">
+          <label class="form-label">Límite</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input type="number" class="form-control text-end" [(ngModel)]="limite" min="0" step="50000" placeholder="0" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Color</label>
+          <input type="color" class="form-control form-control-color" [(ngModel)]="color" />
+        </div>
+      </div>
+      <div class="security-hint d-flex align-items-center gap-2 mt-3 small">
+        <i class="bi bi-shield-check text-primary"></i>
+        <span>Los datos se guardan solo en tu navegador (demo).</span>
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-light flex-grow-1" (click)="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-grow-1" [disabled]="!isFormValid" (click)="agregarTarjeta()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SideBardComponent } from '../side-bard/side-bard.component';
+import { LedgerService } from '../service/ledger.service';
 import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 
@@ -51,18 +52,41 @@ export class TransferenciaComponent {
     this.step = 'form';
   }
 
+  constructor(private ledger: LedgerService) {}
+
   confirmarTransferencia() {
-    // Aquí iría la verificación SMS/OTP y la llamada al servicio real
-    // Para demo: generamos referencia y pasamos a pantalla de éxito
+    if (!this.isFormValid) return;
+    // Generar referencia y fecha
     this.referencia = 'TRX-' + Math.random().toString(36).substring(2, 10).toUpperCase();
     this.fechaHora = new Date();
+
+    // Determinar cuenta origen tipo para el ledger
+    const origen = this.cuentaOrigen.includes('Corriente') ? 'Cuenta Corriente' : 'Cuenta de Ahorros';
+    const montoNum = this.monto || 0;
+    // Validar saldo suficiente y registrar movimiento (egreso)
+    const ok = this.ledger.tryAddMovimiento(`Transferencia a ${this.cuentaDestino}`, -montoNum, {
+      cuenta: origen,
+      referencia: this.referencia,
+      documento: 'TRX'
+    });
+    if (!ok) {
+      Swal.fire({
+        title: 'Saldo insuficiente',
+        text: 'No hay fondos suficientes en la cuenta seleccionada para realizar esta transferencia.',
+        icon: 'error',
+        confirmButtonColor: '#0b345d'
+      });
+      return;
+    }
+
     // Mostrar alerta de éxito y luego mostrar la vista de comprobante
     Swal.fire({
       title: 'Transferencia exitosa',
       text: 'Su transferencia ha sido procesada correctamente.',
       icon: 'success',
       confirmButtonText: 'Ver comprobante',
-      confirmButtonColor: '#0b345d'
+      confirmButtonColor: '#0b345d',
+      position: 'center'
     }).then(() => {
       this.step = 'success';
     });

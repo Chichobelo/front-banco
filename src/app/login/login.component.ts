@@ -15,26 +15,49 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   mensajeError: string = '';
   usuario = '';
-  contraseña = '';
-  password: any;
+  password: string = '';
+  isLoading = false;
   
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
-    this.mensajeError = ''; // Limpia cualquier mensaje previo
-    this.authService.login(this.usuario, this.password).subscribe(
-      (response) => {
+    // Validaciones básicas antes de llamar al backend
+    this.mensajeError = '';
+    const user = (this.usuario || '').trim();
+    const pass = (this.password || '').trim();
+    if (!user || !pass) {
+      this.mensajeError = 'Por favor ingresa tu usuario y contraseña.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.authService.login(user, pass).subscribe({
+      next: (response) => {
         console.log('user logged', response);
-         localStorage.setItem('username', this.usuario);
-        this.router.navigate(['/home']); // Navega a la página de inicio después del login exitoso
+        localStorage.setItem('username', user);
+        this.router.navigate(['/home']);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error login', error);
-        // Muestra un mensaje de error al usuario
-        this.mensajeError = 'Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.';
+        // Mapea mensajes específicos según status o payload
+        const status = error?.status;
+        const backendMsg: string | undefined = error?.error?.message || error?.error?.error || error?.message;
+        if (status === 401) {
+          this.mensajeError = 'Contraseña incorrecta. Verifica e inténtalo de nuevo.';
+        } else if (status === 404) {
+          this.mensajeError = 'Usuario no registrado.';
+        } else if (status === 400 && backendMsg?.toLowerCase().includes('user') && backendMsg?.toLowerCase().includes('not')) {
+          this.mensajeError = 'Usuario no registrado.';
+        } else {
+          this.mensajeError = backendMsg || 'Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.';
+        }
+        this.isLoading = false; // detener spinner en error
+      },
+      complete: () => {
+        this.isLoading = false;
       }
-    );
+    });
   }
 
   

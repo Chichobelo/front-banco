@@ -25,10 +25,11 @@
           <i [class]="mostrarSaldo ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
         </button>
         <!-- Valor del saldo -->
-        <h1 class="fw-bold mb-0">
-          {{ mostrarSaldo ? ('$' + (balanceTotal | number : '1.3-3')) : '$$$$$$' }}
+        <h1 class="fw-bold mb-0 d-flex align-items-baseline gap-2">
+          <span class="fs-5 opacity-75">COP</span>
+          <span>{{ mostrarSaldo ? (balanceTotal | number:'1.0-0') : '••••••' }}</span>
         </h1>
-        <span class="text-light small d-block mt-2">COP - Pesos Colombianos</span>
+        <span class="text-light small d-block mt-2">Pesos Colombianos</span>
       </div>
 
       <!-- Cuentas -->
@@ -42,7 +43,10 @@
                 <small class="text-muted">{{ cuenta.numero }}</small>
               </div>
             </div>
-            <h4 class="fw-bold mb-1">${{ cuenta.saldo | number : '1.2-2' }}</h4>
+            <div class="d-flex align-items-baseline gap-1">
+              <span class="small text-muted">COP</span>
+              <h4 class="fw-bold mb-1 mb-0">{{ cuenta.saldo | number:'1.0-0' }}</h4>
+            </div>
             <small class="text-muted">Saldo disponible</small>
           </div>
         </div>
@@ -52,8 +56,8 @@
       <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
         <h6 class="fw-semibold mb-0">Movimientos recientes</h6>
         <div class="d-flex gap-2">
-          <button class="btn btn-warning btn-sm" (click)="restablecerSaldo()">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Restablecer saldo
+          <button class="btn btn-success btn-sm" (click)="recargarCuenta()">
+            <i class="bi bi-plus-circle me-1"></i> Recargar cuenta
           </button>
           <button class="btn btn-outline-secondary btn-sm btn-extracto" (click)="generarExtracto()">
             <i class="bi bi-file-earmark-text me-1"></i> Exportar PDF
@@ -69,8 +73,9 @@
               <h6 class="mb-0 fw-semibold">{{ m.descripcion }}</h6>
               <small class="text-muted">{{ m.documento }} - {{ m.fecha | date:'yyyy-MM-dd HH:mm' }}</small>
             </div>
-            <span [class]="(m.valor < 0 ? 'text-danger' : 'text-success') + ' fw-bold'">
-              {{ m.valor < 0 ? '-' : '+' }}${{ (m.valor < 0 ? -m.valor : m.valor) | number:'1.0-0' }}
+            <span [class]="(m.valor < 0 ? 'text-danger' : 'text-success') + ' fw-bold d-flex align-items-baseline gap-1'">
+              <span class="small text-muted">COP</span>
+              <span>{{ m.valor < 0 ? '-' : '+' }}{{ (m.valor < 0 ? -m.valor : m.valor) | number:'1.0-0' }}</span>
             </span>
           </div>
         </div>

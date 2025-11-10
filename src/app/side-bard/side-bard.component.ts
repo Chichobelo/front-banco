@@ -55,7 +55,6 @@ export class SideBardComponent {
         { label: 'Pagar facturas', icon: 'bi bi-receipt', link: '/pagar-facturas' }
       ]
     },
-    { label: 'Inversiones', icon: 'fa-solid fa-chart-line', link: '/inversiones' },
     { label: 'Tarjetas', icon: 'fa-solid fa-credit-card', link: '/tarjetas' }
   ];
 

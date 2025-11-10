@@ -16,7 +16,11 @@
       Ingresa los datos para gestionar tus productos y hacer transacciones.
     </p>
 
-    <form (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" novalidate>
+      <!-- Mensaje de error global -->
+      <div *ngIf="mensajeError" class="alert alert-danger py-2" role="alert">
+        {{ mensajeError }}
+      </div>
       <!-- Usuario -->
       <div class="mb-3">
         <div class="input-with-icon position-relative">
@@ -57,8 +61,9 @@
       </div>
 
       <!-- Botón de login -->
-      <button type="submit" class="btn btn-primary w-100 mb-3">
-        Iniciar sesión
+      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Iniciar sesión</span>
+        <span *ngIf="isLoading"><span class="spinner-border spinner-border-sm me-2" role="status"></span> Validando...</span>
       </button>
 
       <!-- Crear usuario -->

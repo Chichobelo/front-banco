@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SideBardComponent } from '../side-bard/side-bard.component';
 import { LedgerService, Cuenta, Movimiento } from '../service/ledger.service';
+import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -42,6 +43,74 @@ export class HomeComponent implements OnInit {
   // Restablece saldo del usuario a 1,000,000 COP (solo Cuenta de Ahorros) y limpia historial
   restablecerSaldo() {
     this.ledger.resetToMillion();
+  }
+
+  // Recarga con selección de cuenta/tarjeta y validación amigable
+  async recargarCuenta() {
+    if (!this.cuentas.length) {
+      await Swal.fire({ icon: 'error', title: 'Sin cuentas', text: 'No hay cuentas para recargar.' });
+      return;
+    }
+
+    const options = this.cuentas
+      .map((c, i) => `<option value="${c.tipo}">${c.tipo} · ${c.numero} · COP ${c.saldo.toLocaleString('es-CO', { maximumFractionDigits: 0 })}</option>`) 
+      .join('');
+
+    const { value: formValues, isConfirmed } = await Swal.fire<{ tipo: string; monto: number; descripcion: string }>({
+      title: 'Recargar cuenta o tarjeta',
+      html: `
+        <div class="text-start">
+          <label class="form-label">Selecciona el destino</label>
+          <select id="swal-cuenta" class="form-select mb-3">${options}</select>
+          <label class="form-label">Monto (COP)</label>
+          <input id="swal-monto" type="number" min="1000" step="1000" placeholder="Ej: 200000" class="form-control mb-3" />
+          <label class="form-label">Descripción (opcional)</label>
+          <input id="swal-desc" type="text" maxlength="80" placeholder="Ej: Recarga desde PayPal" class="form-control" />
+        </div>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Recargar',
+      confirmButtonColor: '#0b345d',
+      preConfirm: () => {
+        const tipo = (document.getElementById('swal-cuenta') as HTMLSelectElement)?.value;
+        const monto = Number((document.getElementById('swal-monto') as HTMLInputElement)?.value);
+        const descripcion = ((document.getElementById('swal-desc') as HTMLInputElement)?.value || '').trim();
+        if (!tipo) {
+          Swal.showValidationMessage('Selecciona una cuenta o tarjeta');
+          return null as any;
+        }
+        if (!monto || isNaN(monto) || monto <= 0) {
+          Swal.showValidationMessage('Ingresa un monto válido mayor a 0');
+          return null as any;
+        }
+        return { tipo, monto, descripcion };
+      }
+    });
+
+    if (!isConfirmed || !formValues) return;
+    const { tipo, monto, descripcion } = formValues;
+    const ref = 'DEP-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+    const desc = descripcion || `Recarga ${tipo}`;
+
+    this.ledger.addMovimiento(desc, monto, {
+      cuenta: tipo as any,
+      documento: 'DEP',
+      referencia: ref
+    });
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Recarga aplicada',
+      html: `
+        <div class="text-start">
+          <div><strong>Destino:</strong> ${tipo}</div>
+          <div><strong>Monto:</strong> COP ${monto.toLocaleString('es-CO', { maximumFractionDigits: 0 })}</div>
+          <div><strong>Referencia:</strong> ${ref}</div>
+        </div>
+      `,
+      confirmButtonColor: '#0b345d'
+    });
   }
 
   // Lee un Blob como DataURL
